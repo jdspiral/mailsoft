@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>Mailsoft</title>
 
     <!-- Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
@@ -40,15 +40,11 @@
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    Laravel
+                    Mailsoft
                 </a>
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/home') }}">Home</a></li>
-                </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
@@ -58,10 +54,13 @@
                         <li><a href="{{ url('/register') }}">Register</a></li>
                     @else
                         @if (!Auth::user()->token)
-                            <li><a href="https://signin.infusionsoft.com/app/oauth/authorize?client_id=at3xrpwexxc5zjt9jamrsdem&redirect_uri=http%3A%2F%2Fstripe.app%2Fadmin%2Fcallback&response_type=code&scope=full">Register your app with Infusionsoft</a></li>
-                        @else
-                            <li> <a href="">dodod</a></li>
+                            <li><a href="https://signin.infusionsoft.com/app/oauth/authorize?client_id=at3xrpwexxc5zjt9jamrsdem&redirect_uri=http%3A%2F%2Fmailsoft.app%2Fdashboard%2Finfusionsoft%2Fcallback&response_type=code&scope=full">Register your app with Infusionsoft</a></li>
                         @endif
+
+                            @if (!Auth::user()->mailchimp)
+                                <li><a href="https://login.mailchimp.com/oauth2/authorize?response_type=code&client_id=170746405143&redirect_uri=http%3A%2F%2Fmailsoft.app%2Fdashboard%2Fmailchimp%2Fcallback">Register app with Mailchimp</a></li>
+                            @endif
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
@@ -76,9 +75,9 @@
             </div>
         </div>
     </nav>
-
+    <div class="container">
     @yield('content')
-
+    </div>
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>

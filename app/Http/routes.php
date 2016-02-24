@@ -1,22 +1,9 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Routes File
-|--------------------------------------------------------------------------
-|
-| Here is where you will register all of the routes in an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
-
-use Illuminate\Http\Request;
-use GuzzleHttp\Client;
-//use Infusionsoft\Infusionsoft;
-
-//Route::get('/', 'UserController@index');
-
+// Home route
+Route::get('/', function() {
+    return view('home');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -29,29 +16,17 @@ use GuzzleHttp\Client;
 |
 */
 
-//Route::get('/admin/callback', 'UserController@update');
-
 Route::group(['middleware' => ['web']], function () {
 
     Route::auth();
 
-    Route::get('/', function () {
-        return view('welcome');
-    });
-
     Route::get('/dashboard', 'InfusionsoftController@countUnSyncedContacts');
 
+    Route::get('/dashboard/infusionsoft/callback', 'UserController@update');
+
+    Route::get('/dashboard/mailchimp/callback', 'MailchimpRegisterController@callback');
+
+    Route::get('/dashboard/mailchimp/getaccesstoken', 'MailchimpRegisterController@getaccesstoken');
+
     Route::get('/contacts', 'InfusionsoftController@getSubscribersFromMC');
-    Route::get('/admin/callback', 'UserController@update');
-
-    Route::get('/admin/register', function() {
-
-        $infusionsoft = new Infusionsoft\Infusionsoft(array(
-            'clientId' => 'at3xrpwexxc5zjt9jamrsdem',//getenv('INFUSIONSOFT_CLIENT_ID'),
-            'clientSecret' => 'RH9nrfQAnE',//getenv('INFUSIONSOFT_CLIENT_SECRET'),
-            'redirectUri' => 'http://stripe.app/admin/callback',//getenv('INFUSIONSOFT_REDIRECT_URI'),
-        ));
-
-        echo '<a href="' . $infusionsoft->getAuthorizationUrl() . '">Click here to connect to Infusionsoft</a>';
-    });
 });

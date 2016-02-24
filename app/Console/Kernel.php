@@ -27,4 +27,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('inspire')
                  ->hourly();
     }
+
+    protected function countUnSyncedContacts(Schedule $schedule)
+    {
+        $schedule->call('\App\Http\Controller\CronController@countUnSyncedContacts')->hourly();
+    }
 }

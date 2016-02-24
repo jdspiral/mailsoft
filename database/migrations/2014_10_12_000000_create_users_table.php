@@ -16,8 +16,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->binary('token');
-            $table->string('access_token');
-            $table->integer('endOfLife');
+            $table->binary('mailchimp');
             $table->string('email')->unique();
             $table->string('password', 60);
             $table->rememberToken();

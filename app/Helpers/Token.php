@@ -3,7 +3,6 @@ namespace App\Helpers;
 
 use Infusionsoft\Infusionsoft;
 use App\User;
-use Illuminate\Http\Request;
 use App\Http\Requests;
 
 
@@ -18,17 +17,13 @@ class Token {
 
     public static function update_tokens_in_database($serialToken, User $user)
     {
-        //$infusionsoft = new Infusionsoft();
-        //$infusionsoft = new Infusionsoft();
-        //$infusionsoft = new Infusionsoft;
         $infusionsoft = new Infusionsoft(array(
-            'clientId' => 'at3xrpwexxc5zjt9jamrsdem',//getenv('INFUSIONSOFT_CLIENT_ID'),
-            'clientSecret' => 'RH9nrfQAnE',//getenv('INFUSIONSOFT_CLIENT_SECRET'),
-            'redirectUri' => 'http://stripe.app/admin/callback',//getenv('INFUSIONSOFT_REDIRECT_URI'),
+            'clientId' => getenv('INFUSIONSOFT_CLIENT_ID'),
+            'clientSecret' => getenv('INFUSIONSOFT_CLIENT_SECRET'),
+            'redirectUri' => getenv('INFUSIONSOFT_REDIRECT_URI'),
         ));
         //Set the token from the database
         $tokenObj = unserialize($serialToken);
-
 
         //Refresh the tokens from Infusionsoft
         $infusionsoft->setToken($tokenObj);
@@ -52,21 +47,17 @@ class Token {
 */
 public static function retrieve_tokens_in_database(User $user)
     {
-        //$infusionsoft = new Infusionsoft;
         $infusionsoft = new Infusionsoft(array(
-            'clientId' => 'at3xrpwexxc5zjt9jamrsdem',//getenv('INFUSIONSOFT_CLIENT_ID'),
-            'clientSecret' => 'RH9nrfQAnE',//getenv('INFUSIONSOFT_CLIENT_SECRET'),
-            'redirectUri' => 'http://stripe.app/admin/callback',//getenv('INFUSIONSOFT_REDIRECT_URI'),
+            'clientId' => getenv('INFUSIONSOFT_CLIENT_ID'),
+            'clientSecret' => getenv('INFUSIONSOFT_CLIENT_SECRET'),
+            'redirectUri' => getenv('INFUSIONSOFT_REDIRECT_URI'),
         ));
 
 
     try {
-
-        // $user = User::findOrFail(Auth::user()->id);
         $token = $user->token;
         //Set the token from the database
         $token = unserialize($token);
-        //$infusionsoft->setToken($token);
         if($token) {
             return $token;
         }
@@ -85,8 +76,6 @@ public static function retrieve_tokens_in_database(User $user)
         $token = serialize($newToken);
 
         $user->token = $token;
-        //$user->access_token     = $token;
-        //$user->token_expiration = $newToken->endOfLife;
         $user->save();
 
         if($tokenData) {

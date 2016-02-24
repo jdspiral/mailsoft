@@ -2,9 +2,7 @@
 
 @section('content')
 
-    @foreach($users as $user)
-        <a href="{{ $user->id }}">{{  $user->name }}</a>
-    @endforeach
+    <h1>Welcome to my app</h1>
 
 
 
