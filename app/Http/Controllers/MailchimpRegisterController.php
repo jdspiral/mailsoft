@@ -30,7 +30,7 @@ class MailchimpRegisterController extends Controller
                 'grant_type' => 'authorization_code',
                 'client_id' => getenv('MAILCHIMP_CLIENT_ID'),
                 'client_secret' => getenv('MAILCHIMP_CLIENT_SECRET'),
-                'redirect_uri' => 'http://mailsoft.app/dashboard/mailchimp/callback',
+                'redirect_uri' => getenv('MAILCHIMP_REDIRECT_URI'),
                 'code' => $code
             ]
         ]);
