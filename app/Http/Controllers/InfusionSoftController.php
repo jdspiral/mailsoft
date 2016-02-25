@@ -76,11 +76,9 @@ class InfusionSoftController extends Controller
                 $user->save();
                 // Retrieve the list of contacts again now that we have a new token
                 foreach ($contacts as $contact) {
-                    foreach ($contact as $data) {
-                        $contactExists = $infusionsoft->contacts()->findByEmail($data->email_address, ['Id']);
-                        if ($contactExists) {
-                            $count--;
-                        }
+                    $contactExists = $infusionsoft->contacts()->findByEmail($contact->email_address, ['Id']);
+                    if ($contactExists) {
+                        $count--;
                     }
                 }
             }
