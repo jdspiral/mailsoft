@@ -5,10 +5,10 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
-                <div class="panel-heading">Homepage</div>
+                <div class="panel-heading">Dashboard</div>
 
                 <div class="panel-body">
-                    Please login to use this app
+                    You are logged in!
                 </div>
             </div>
         </div>

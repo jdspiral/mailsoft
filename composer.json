@@ -7,10 +7,7 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-        "skovmand/mailchimp-laravel": "^1.0",
         "guzzlehttp/guzzle": "^6.1",
-        "ixudra/curl": "^6.0",
-        "socialiteproviders/mailchimp": "^1.1",
         "infusionsoft/php-sdk": "^1.2"
     },
     "require-dev": {

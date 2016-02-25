@@ -41,11 +41,11 @@ class Token {
         return $user->token;
     }
 
-/**
-* Retrieve the access token from the database to use in following API calls
-*
-*/
-public static function retrieve_tokens_in_database(User $user)
+    /**
+     * Retrieve the access token from the database to use in following API calls
+     *
+     */
+    public static function retrieve_tokens_in_database(User $user)
     {
         $infusionsoft = new Infusionsoft(array(
             'clientId' => getenv('INFUSIONSOFT_CLIENT_ID'),
@@ -54,40 +54,40 @@ public static function retrieve_tokens_in_database(User $user)
         ));
 
 
-    try {
-        $token = $user->token;
-        //Set the token from the database
-        $token = unserialize($token);
-        if($token) {
-            return $token;
+        try {
+            $token = $user->token;
+            //Set the token from the database
+            $token = unserialize($token);
+            if($token) {
+                return $token;
+            }
         }
-    }
-    catch(\Infusionsoft\TokenExpiredException $e) {
+        catch(\Infusionsoft\TokenExpiredException $e) {
 
-        //Set the buffer time to 10 minutes and refresh the tokens if within 10 minutes of expiring
-        // $bufferTime = time() - 600;
+            //Set the buffer time to 10 minutes and refresh the tokens if within 10 minutes of expiring
+            // $bufferTime = time() - 600;
 
-        $infusionsoft->setToken($user->token);
+            $infusionsoft->setToken($user->token);
 
-        $tokenData = $infusionsoft->refreshAccessToken();
+            $tokenData = $infusionsoft->refreshAccessToken();
 
-        //Set Variable for serialized token to save to db
-        $newToken = $infusionsoft->getToken();
-        $token = serialize($newToken);
+            //Set Variable for serialized token to save to db
+            $newToken = $infusionsoft->getToken();
+            $token = serialize($newToken);
 
-        $user->token = $token;
-        $user->save();
+            $user->token = $token;
+            $user->save();
 
-        if($tokenData) {
-            return $tokenData;
+            if($tokenData) {
+                return $tokenData;
+            }
+            else {
+                return false;
+            }
+
         }
-        else {
-            return false;
-        }
 
-    }
-
-    return $infusionsoft->getToken();
+        return $infusionsoft->getToken();
 
     }
 
