@@ -48,38 +48,24 @@ class InfusionSoftController extends Controller
 
             // Set the token if we have it saved in the database
             if ($user->token) {
-                Token::retrieve_tokens_in_database($user);
-                $infusionsoft->setToken(Token::retrieve_tokens_in_database($user));
+                $token = Token::retrieve_tokens_in_database($user);
+                if(!$token) {
+                    Token::update_tokens_in_database($token, $user);
+                }
+                else {
+                    $infusionsoft->setToken($token);
+                }
             }
 
             // Get the total of unsynced contacts from Mailchimp
             // This will allow us to determine the number of unsynced
             // Contacts between Mailchimp and Infusionsoft
             $count = $contacts->total_items;
-            try {
-                foreach ($contacts->members as $contact) {
-                    $contactExists = $infusionsoft->contacts()->findByEmail($contact->email_address, ['Id']);
-                    // If the contact exists, remove them from the total
-                    if ($contactExists) {
-                        $count--;
-                    }
-                }
-            } catch (InfusionsoftException $e) {
-
-                // Refresh our access token since we've thrown a token expired exception
-                $infusionsoft->refreshAccessToken();
-                // We also have to save the new token, since it's now been refreshed.
-                // We serialize the token to ensure the entire PHP object is saved
-                // and not accidentally converted to a string
-                $user->token = serialize($infusionsoft->getToken());
-
-                $user->save();
-                // Retrieve the list of contacts again now that we have a new token
-                foreach ($contacts->members as $contact) {
-                    $contactExists = $infusionsoft->contacts()->findByEmail($contact->email_address, ['Id']);
-                    if ($contactExists) {
-                        $count--;
-                    }
+            foreach ($contacts->members as $contact) {
+                $contactExists = $infusionsoft->contacts()->findByEmail($contact->email_address, ['Id']);
+                // If the contact exists, remove them from the total
+                if ($contactExists) {
+                    $count--;
                 }
             }
 
@@ -152,5 +138,32 @@ class InfusionSoftController extends Controller
         }
 
         return redirect('/dashboard');
+    }
+
+    public static function getTags()
+    {
+
+        $infusionsoft = new Infusionsoft(array(
+            'clientId' => getenv('INFUSIONSOFT_CLIENT_ID'),
+            'clientSecret' => getenv('INFUSIONSOFT_CLIENT_SECRET'),
+            'redirectUri' => getenv('INFUSIONSOFT_REDIRECT_URI'),
+        ));
+
+        // Set authorized user to a variable for ease of use
+        $user = Auth::user();
+        if ($user->token) {
+            $token = Token::retrieve_tokens_in_database($user);
+            if(!$token) {
+                Token::update_tokens_in_database($token, $user);
+            }
+            else {
+                $infusionsoft->setToken($token);
+            }
+        }
+
+        // Get all tags in app
+        $tags = $infusionsoft->data()->query('ContactGroup', 999, 0, array('Id' => '%'), array('GroupName', 'Id'), 'Id', TRUE);
+
+        return view('partials.tags')->with(compact($tags));
     }
 }
